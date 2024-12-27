@@ -1,0 +1,5 @@
+paramiko>=2.8.1
+PyInstaller>=5.6.2
+PyYAML>=6.0
+cryptography>=35.0.0
+typing-extensions>=4.4.0 

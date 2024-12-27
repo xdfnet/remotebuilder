@@ -1,0 +1,65 @@
+# 依赖管理
+dependencies:
+  required_packages:
+    - name: "PyQt6"
+      version: ">=6.0.0"
+    - name: "requests"
+      version: ">=2.26.0"
+    - name: "pyyaml"
+      version: ">=6.0"
+    - name: "paramiko"
+      version: ">=2.8.0"
+    - name: "cryptography"
+      version: ">=35.0.0"
+
+  pip_options:
+    index_url: "https://mirrors.aliyun.com/pypi/simple/"
+    trusted_host: "mirrors.aliyun.com"
+
+# 日志配置
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/packager.log"
+  max_size: 10485760  # 10MB
+  backup_count: 5
+
+# 安全配置
+security:
+  encryption_key: "${ENCRYPTION_KEY}"
+  ssl_verify: true
+  timeout: 30
+  retry:
+    max_attempts: 3
+    delay: 5
+    backoff_factor: 2 
+
+# 机器配置
+machines:
+  "1":
+    name: "大主机"
+    config:
+      ssh_host: "192.168.88.6"
+      ssh_username: "xdfnet"
+      ssh_password: "setup"
+      conda_path: "C:\\Users\\xdfnet\\miniconda3"
+      conda_env: "pro"
+      remote_path: "D:\\iCode\\WeCreateForge"
+  "2":
+    name: "小主机"
+    config:
+      ssh_host: "192.168.88.5"
+      ssh_username: "xdfnet"
+      ssh_password: "setup"
+      conda_path: "C:\\Users\\xdfnet\\miniconda3"
+      conda_env: "pro"
+      remote_path: "D:\\iCode\\WeCreateForge"
+  "3":
+    name: "虚拟机"
+    config:
+      ssh_host: "192.168.88.4"
+      ssh_username: "dafei"
+      ssh_password: "setup"
+      conda_path: "C:\\Users\\dafei\\miniconda3"
+      conda_env: "pro"
+      remote_path: "D:\\iCode\\WeCreateForge" 
