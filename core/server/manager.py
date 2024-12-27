@@ -3,9 +3,11 @@
 负责管理所有远程打包服务器,提供服务器选择、负载均衡等功能
 """
 import logging
+import time
 from typing import Dict, List, Optional
 from .base import BaseServer, ServerStatus
 from .factory import ServerFactory
+from .pool import ConnectionPool
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +17,10 @@ class ServerManager:
     def __init__(self):
         self.servers: Dict[str, BaseServer] = {}
         self.active_servers: Dict[str, BaseServer] = {}
+        self.reconnect_attempts: Dict[str, int] = {}  # 记录重连次数
+        self.max_reconnect_attempts = 3  # 最大重连次数
+        self.reconnect_delay = 5  # 重连延迟(秒)
+        self.connection_pool = ConnectionPool()  # 连接池
         
     def add_server(self, name: str, server_type: str, config: dict) -> bool:
         """
@@ -35,10 +41,12 @@ class ServerManager:
                 
             server = ServerFactory.create_server(server_type, config)
             if not server:
-                logger.error(f"创建���务器 {name} 失败")
+                logger.error(f"创建服务器 {name} 失败")
                 return False
                 
             self.servers[name] = server
+            self.reconnect_attempts[name] = 0
+            self.connection_pool.add_server(server_type, server)
             return True
             
         except Exception as e:
@@ -65,7 +73,18 @@ class ServerManager:
                 server.disconnect()
                 del self.active_servers[name]
                 
+            # 从连接池移除
+            server_type = None
+            for t, cls in ServerFactory._server_types.items():
+                if isinstance(server, cls):
+                    server_type = t
+                    break
+                    
+            if server_type:
+                self.connection_pool.remove_server(server_type, server)
+                
             del self.servers[name]
+            del self.reconnect_attempts[name]
             return True
             
         except Exception as e:
@@ -90,11 +109,52 @@ class ServerManager:
             server = self.servers[name]
             if server.connect():
                 self.active_servers[name] = server
+                self.reconnect_attempts[name] = 0
                 return True
-            return False
+                
+            # 连接失败,尝试重连
+            return self.reconnect_server(name)
             
         except Exception as e:
             logger.error(f"连接服务器失败: {str(e)}")
+            return False
+            
+    def reconnect_server(self, name: str) -> bool:
+        """
+        重连服务器
+        
+        Args:
+            name: 服务器名称
+            
+        Returns:
+            bool: 是否重连成功
+        """
+        try:
+            if name not in self.servers:
+                logger.error(f"服务器 {name} 不存在")
+                return False
+                
+            server = self.servers[name]
+            attempts = self.reconnect_attempts[name]
+            
+            while attempts < self.max_reconnect_attempts:
+                logger.info(f"正在重连服务器 {name}, 第 {attempts + 1} 次尝试")
+                time.sleep(self.reconnect_delay)
+                
+                if server.connect():
+                    self.active_servers[name] = server
+                    self.reconnect_attempts[name] = 0
+                    logger.info(f"服务器 {name} 重连成功")
+                    return True
+                    
+                attempts += 1
+                self.reconnect_attempts[name] = attempts
+                
+            logger.error(f"服务器 {name} 重连失败,已达到最大重试次数")
+            return False
+            
+        except Exception as e:
+            logger.error(f"重连服务器失败: {str(e)}")
             return False
             
     def disconnect_server(self, name: str) -> bool:
@@ -150,9 +210,18 @@ class ServerManager:
             Dict[str, ServerStatus]: 服务器状态字典
         """
         results = {}
-        for name, server in self.active_servers.items():
+        for name, server in list(self.active_servers.items()):
             try:
                 status = server.check_health()
+                if status.errors:
+                    # 健康检查失败,尝试重连
+                    logger.warning(f"服务器 {name} 健康检查失败,尝试重连")
+                    if not self.reconnect_server(name):
+                        # 重连失败,从活动服务器列表中移除
+                        del self.active_servers[name]
+                        continue
+                    # 重连成功,重新检查健康状态
+                    status = server.check_health()
                 results[name] = status
             except Exception as e:
                 logger.error(f"检查服务器 {name} 状态失败: {str(e)}")
@@ -170,45 +239,28 @@ class ServerManager:
             Optional[BaseServer]: 选中的服务器实例
         """
         try:
-            # 获取指定类型的活动服务器
-            available_servers = [
-                (name, server) 
-                for name, server in self.active_servers.items()
-                if isinstance(server, ServerFactory.get_server_class(server_type))
-            ]
-            
-            if not available_servers:
-                logger.warning(f"没有可用的 {server_type} 服务器")
+            # 从连接池获取服务器
+            server = self.connection_pool.acquire_server(server_type)
+            if not server:
                 return None
                 
             # 检查服务器状态
-            server_stats = []
-            for name, server in available_servers:
-                status = server.check_health()
-                if status.errors:
-                    continue
-                    
-                # 计算综合负载分数 (CPU、内存、磁盘的平均值)
-                load_score = (
-                    status.cpu_usage +
-                    status.memory_usage +
-                    status.disk_usage
-                ) / 3
-                server_stats.append((load_score, server))
-                
-            if not server_stats:
-                logger.warning(f"没有健康的 {server_type} 服务器")
+            status = server.check_health()
+            if status.errors:
+                # 健康检查失败,释放连接并返回 None
+                self.connection_pool.release_server(server_type, server)
                 return None
                 
-            # 选择负载最低的服务器
-            server_stats.sort(key=lambda x: x[0])
-            return server_stats[0][1]
+            return server
             
         except Exception as e:
-            logger.error(f"选择服务器失���: {str(e)}")
+            logger.error(f"选择服务器失败: {str(e)}")
+            if server:
+                self.connection_pool.release_server(server_type, server)
             return None
             
     def cleanup(self) -> None:
         """清理所有连接"""
         for name in list(self.active_servers.keys()):
-            self.disconnect_server(name) 
+            self.disconnect_server(name)
+        self.connection_pool.cleanup() 

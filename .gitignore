@@ -32,23 +32,31 @@ ENV/
 .vscode/
 *.swp
 *.swo
+.project
+.pydevproject
+.settings/
+
+# OS
 .DS_Store
+Thumbs.db
 
 # Logs
-logs/
 *.log
-
-# Build
-*.spec
-*.app
-*.exe
-*.dmg
+logs/
 
 # Test
 .coverage
 .pytest_cache/
 htmlcov/
 
-# Project specific
+# Build
+*.spec
+*.exe
+*.app
+*.dmg
+
+# Temp
+tmp/
 temp/
-output/ 
+.tmp/
+.temp/ 

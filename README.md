@@ -1,127 +1,150 @@
 # RemoteBuilder
 
-RemoteBuilder 是一个专业的远程跨平台打包工具，支持将 Python 应用程序打包为 Windows、macOS 和 Unix 可执行程序。它提供智能的远程打包功能，可以自动选择最优的打包服务器，实现高效的跨平台打包。
+RemoteBuilder 是一个强大的远程跨平台打包工具,支持在远程服务器上为 Windows、macOS 和 Linux 平台构建应用程序。
 
-详细的项目规划和开发路线图请查看 [项目规划文档](docs/project_plan.md)。
+## 主要特性
 
-## 特性
+- 跨平台打包支持
+  - Windows 应用程序打包
+  - macOS 应用程序打包
+  - Linux 应用程序打包
 
-- 支持 Windows、macOS 和 Unix 三平台打包
-- 智能远程打包服务器管理
-- 自动负载均衡和故障转移
-- 完整的环境检查和依赖管理
-- 灵活的配置系统
-- 详细的日志记录
-- 自动重试机制
-- 资源文件验证
-- 交互式操作模式
+- 智能服务器管理
+  - 自动服务器选择
+  - 负载均衡
+  - 健康检查
+  - 自动重连
+  - 连接池管理
 
-## 项目结构
+- 可靠性保证
+  - 错误重试机制
+  - 断线重连
+  - 任务状态跟踪
+  - 资源自动清理
 
-```text
-remotebuilder/
-├── main.py                 # 主程序
-├── build_pack.py          # 打包脚本
-├── requirements.txt       # 项目依赖
-├── Info.plist            # macOS 应用配置
-├── core/                 # 核心功能模块
-│   ├── builder/         # 打包器实现
-│   │   ├── base.py     # 基础打包类
-│   │   └── pyinstaller.py  # PyInstaller 实现
-│   └── server/         # 服务器管理
-│       ├── base.py     # 基础服务器类
-│       ├── windows.py  # Windows 服务器
-│       ├── unix.py     # Unix 服务器
-│       ├── macos.py    # macOS 服务器
-│       └── factory.py  # 服务器工厂
-└── src/                 # 源代码
-    ├── core.py         # 核心工具
-    ├── config.py       # 配置管理
-    ├── packager.py     # 打包管理
-    └── config.yaml     # 配置文件
-```
+- 打包工具支持
+  - PyInstaller (默认)
+  - 支持扩展其他打包工具
 
 ## 安装
 
-1. 克隆仓库：
-
 ```bash
+# 克隆仓库
 git clone https://github.com/xdfnet/remotebuilder.git
-cd remotebuilder
-```
 
-2. 创建并激活虚拟环境：
-
-```bash
-# 使用 conda
-conda create -n packager python=3.9
-conda activate packager
-
-# 或使用 venv
-python -m venv .venv
-source .venv/bin/activate  # Linux/macOS
-.venv\Scripts\activate     # Windows
-```
-
-3. 安装依赖：
-
-```bash
+# 安装依赖
 pip install -r requirements.txt
 ```
 
 ## 使用方法
 
-### 基本用法
+1. 配置打包服务器:
 
-```bash
-python main.py --entry-script path/to/your/main.py --workspace path/to/workspace
+```python
+from core.server import ServerManager
+
+# 创建服务器管理器
+server_manager = ServerManager()
+
+# 添加 Windows 打包服务器
+server_manager.add_server(
+    name="win_builder",
+    server_type="windows",
+    config={
+        "host": "192.168.1.100",
+        "username": "builder",
+        "password": "password"
+    }
+)
+
+# 添加 macOS 打包服务器
+server_manager.add_server(
+    name="mac_builder",
+    server_type="macos",
+    config={
+        "host": "192.168.1.101",
+        "username": "builder",
+        "key_file": "~/.ssh/id_rsa"
+    }
+)
 ```
 
-### 参数说明
+2. 创建打包任务:
 
-- `--entry-script`: 必需，入口脚本路径
-- `--workspace`: 必需，工作空间路径
-- `--platform`: 可选，目标平台 (windows/macos/unix/all)，默认为 all
-- `--config`: 可选，配置文件路径
-- `-i, --interactive`: 可选，启用交互式模式
-- `--machine`: 可选，指定打包机器 (1/2/3)
+```python
+from core.builder import BuildManager
 
-### 交互式模式
+# 创建打包管理器
+build_manager = BuildManager(server_manager)
 
-在交互式模式下，您可以：
-1. 选择目标平台
-2. 选择打包机器
-3. 配置打包选项
-4. 监控打包进度
+# 创建打包任务
+task_id = build_manager.create_task(
+    platform="windows",  # windows/macos/linux
+    entry_script="app.py",
+    workspace="./src",
+    config={
+        "builder": "pyinstaller",
+        "pyinstaller": {
+            "name": "MyApp",
+            "onefile": True,
+            "console": False,
+            "icon": "icon.ico",
+            "hidden_imports": ["requests"],
+            "datas": [
+                ("assets", "assets"),
+                ("config.yaml", ".")
+            ]
+        }
+    }
+)
 
-```bash
-python main.py -i --entry-script path/to/your/main.py --workspace path/to/workspace
+# 启动任务
+if build_manager.start_task(task_id):
+    print("打包成功!")
+    status = build_manager.get_task_status(task_id)
+    print(f"输出目录: {status['output_dir']}")
+else:
+    print("打包失败!")
 ```
 
-### 远程打包
+## 项目结构
 
-RemoteBuilder 支持在远程服务器上进行打包操作。您需要在 `config.yaml` 中配置服务器信息：
-
-```yaml
-servers:
-  windows:
-    host: windows.example.com
-    username: user
-    password: pass  # 或使用 key_file
-  macos:
-    host: macos.example.com
-    username: user
-    key_file: ~/.ssh/id_rsa
+```
+remotebuilder/
+├── core/
+│   ├── server/         # 服务器管理
+│   │   ├── base.py     # 服务器基类
+│   │   ├── windows.py  # Windows 服务器
+│   │   ├── macos.py    # macOS 服务器
+│   │   ├── unix.py     # Unix 服务器
+│   │   ├── pool.py     # 连接池
+│   │   ├── retry.py    # 重试机制
+│   │   ├── factory.py  # 服务器工厂
+│   │   └── manager.py  # 服务器管理器
+│   └── builder/        # 打包管理
+│       ├── base.py     # 打包器基类
+│       ├── pyinstaller.py  # PyInstaller 实现
+│       └── manager.py  # 打包管理器
+├── docs/              # 文档
+├── examples/          # 示例代码
+├── tests/            # 测试代码
+├── README.md         # 项目说明
+├── requirements.txt  # 依赖清单
+└── LICENSE          # 开源协议
 ```
 
-## 开发指南
+## 开发计划
 
-1. Fork 项目
-2. 创建特性分支
-3. 提交改动
-4. 推送到分支
-5. 创建 Pull Request
+- [ ] 添加更多打包工具支持
+- [ ] 实现 Web 管理界面
+- [ ] 添加打包任务队列
+- [ ] 支持自定义打包脚本
+- [ ] 添加监控和统计功能
 
-## 许可证
+## 贡献指南
+
+欢迎提交 Pull Request 或 Issue!
+
+## 开源协议
 
 MIT License
