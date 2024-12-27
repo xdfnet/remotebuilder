@@ -46,7 +46,7 @@ remotebuilder/
 1. 克隆仓库：
 
 ```bash
-git clone https://github.com/yourusername/remotebuilder.git
+git clone https://github.com/xdfnet/remotebuilder.git
 cd remotebuilder
 ```
 

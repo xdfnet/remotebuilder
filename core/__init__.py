@@ -3,10 +3,10 @@ RemoteBuilder 核心模块
 """
 
 __version__ = '1.0.0'
-__author__ = 'Your Name'
-__email__ = 'your.email@example.com'
+__author__ = 'xdfnet'
+__email__ = 'xdfnet@example.com'
 __description__ = 'Remote Cross-Platform Python Application Builder'
-__url__ = 'https://github.com/yourusername/remotebuilder'
+__url__ = 'https://github.com/xdfnet/remotebuilder'
 __license__ = 'MIT'
 
 def get_version() -> str:

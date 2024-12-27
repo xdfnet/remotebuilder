@@ -11,7 +11,7 @@
 
 1. Fork 项目并克隆到本地：
 ```bash
-git clone https://github.com/yourusername/remotebuilder.git
+git clone https://github.com/xdfnet/remotebuilder.git
 cd remotebuilder
 ```
 
@@ -64,7 +64,7 @@ git checkout -b feature/your-feature
 ```
 feat(server): 添加服务器自动重连功能
 
-- 实现断线重��机制
+- 实现断线重连机制
 - 添加重连次数限制
 - 添加重连间隔配置
 
