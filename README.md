@@ -1,255 +1,211 @@
 # RemoteBuilder
 
-```
- ____                 _       ____        _ _     _           
-|  _ \ ___ _ __ ___ | |_ ___| __ ) _   _(_) | __| | ___ _ __ 
-| |_) / _ \ '_ ` _ \| __/ _ \  _ \| | | | | |/ _` |/ _ \ '__|
-|  _ <  __/ | | | | | ||  __/ |_) | |_| | | | (_| |  __/ |   
-|_| \_\___|_| |_| |_|\__\___|____/ \__,_|_|_|\__,_|\___|_|   
-                                                              
-Remote Cross-Platform Python Application Builder
-Version 1.0.0
-```
+远程跨平台 Python 应用打包工具
 
-RemoteBuilder 是一个强大的远程跨平台打包工具,支持在远程服务器上为 Windows、macOS 和 Linux 平台构建应用程序。它提供了智能的服务器管理、可靠的错误处理和灵活的打包配置功能。
+## 项目简介
+
+RemoteBuilder 是一个强大的远程跨平台 Python 应用打包工具，支持在远程服务器上为 Windows、macOS 和 Linux 平台构建应用程序。它提供了智能的服务器管理、高效的任务调度和可靠的打包流程。
 
 ## 为谁服务
 
-RemoteBuilder 主要服务于以下用户群体:
-
-- **Python 应用开发团队**: 需要在多个平台上分发应用程序的开发团队,可以利用 RemoteBuilder 在不同操作系统的服务器上自动构建应用
-- **独立开发者**: 没有完整的构建环境但需要跨平台发布应用的个人开发者
-- **持续集成/持续部署(CI/CD)系统**: 需要自动化跨平台构建流程的 DevOps 团队
-- **大规模应用分发**: 需要频繁更新多个平台应用版本的企业用户
+- Python 应用开发团队：需要同时支持多个平台的打包需求
+- 独立开发者：希望在不同环境下构建应用
+- CI/CD 系统：需要自动化的跨平台打包能力
+- 大规模应用分发：需要稳定可靠的打包服务
 
 ## 解决什么问题
 
-- **跨平台构建环境管理**: 无需在本地维护多个操作系统环境,远程服务器统一管理
-- **自动化构建流程**: 从源码到可执行文件的全自动构建,无需人工干预
-- **资源优化利用**: 智能调度和连接池机制,充分利用服务器资源
-- **可靠性保证**: 完善的重试机制和故障转移,确保构建任务稳定完成
-- **统一的接口**: 不同平台统一的配置方式和API接口,降低使用门槛
+1. 环境管理
+   - 自动管理不同平台的构建环境
+   - 智能调度最合适的构建服务器
+   - 确保环境一致性和可靠性
 
-## 主要特性
+2. 打包流程
+   - 支持多种打包工具(PyInstaller等)
+   - 提供统一的打包接口
+   - 自动处理依赖关系
 
-- 跨平台打包支持
-  - Windows 应用程序打包
-  - macOS 应用程序打包
-  - Linux 应用程序打包
-  - 支持多种打包工具
-  - 统一的打包配置
+3. 资源优化
+   - 智能负载均衡
+   - 连接池复用
+   - 并发任务处理
+   - 文件传输优化
 
-- 智能服务器管理
-  - 自动服务器选择
-  - 负载均衡调度
-  - 实时健康检查
-  - 自动断线重连
-  - 连接池复用
-  - 空闲资源回收
+4. 可靠性保证
+   - 自动故障转移
+   - 状态实时监控
+   - 错误自动恢复
+   - 数据完整性校验
 
-- 可靠性保证
-  - 多级重试机制
-  - 自动故障转移
-  - 任务状态跟踪
-  - 资源自动清理
-  - 详细错误日志
+## 核心功能
 
-- 打包工具支持
-  - PyInstaller (默认)
-  - 支持扩展其他打包工具
-  - 统一的打包接口
-  - 灵活的配置选项
+1. 服务器管理
+   - 多服务器支持
+   - 智能负载均衡
+   - 健康状态监控
+   - 自动故障转移
+   - 连接池管理
+
+2. 任务调度
+   - 并发任务处理
+   - 队列优先级
+   - 实时进度跟踪
+   - 任务取消支持
+
+3. 文件处理
+   - 断点续传
+   - 增量上传
+   - 文件校验
+   - 并发传输
+
+4. 监控统计
+   - 服务器状态
+   - 任务进度
+   - 资源使用
+   - 性能指标
 
 ## 快速开始
 
-### 安装
+1. 安装
 
 ```bash
-# 克隆仓库
-git clone https://github.com/xdfnet/remotebuilder.git
-
-# 安装依赖
-pip install -r requirements.txt
+pip install remotebuilder
 ```
 
-### 基本用法
+2. 配置
 
-1. 配置打包服务器:
+创建配置文件 `config.yaml`:
 
-```python
-from core.server import ServerManager
-
-# 创建服务器管理器
-server_manager = ServerManager()
-
-# 添加 Windows 打包服务器
-server_manager.add_server(
-    name="win_builder",
-    server_type="windows",
-    config={
-        "host": "192.168.1.100",
-        "username": "builder",
-        "password": "password"
-    }
-)
-
-# 添加 macOS 打包服务器
-server_manager.add_server(
-    name="mac_builder",
-    server_type="macos",
-    config={
-        "host": "192.168.1.101",
-        "username": "builder",
-        "key_file": "~/.ssh/id_rsa"
-    }
-)
+```yaml
+servers:
+  windows:
+    host: windows.example.com
+    port: 22
+    username: builder
+    key_file: ~/.ssh/windows_key
+  
+  macos:
+    host: macos.example.com
+    port: 22
+    username: builder
+    key_file: ~/.ssh/macos_key
+    
+  linux:
+    host: linux.example.com
+    port: 22
+    username: builder
+    key_file: ~/.ssh/linux_key
 ```
 
-2. 创建打包任务:
+3. 使用
 
 ```python
-from core.builder import BuildManager
+from remotebuilder import RemoteBuilder
 
-# 创建打包管理器
-build_manager = BuildManager(server_manager)
+# 创建构建器
+builder = RemoteBuilder()
+
+# 添加服务器
+builder.add_server("win1", "windows", config["servers"]["windows"])
+builder.add_server("mac1", "macos", config["servers"]["macos"])
+builder.add_server("linux1", "linux", config["servers"]["linux"])
 
 # 创建打包任务
-task_id = build_manager.create_task(
-    platform="windows",  # windows/macos/linux
+task_id = builder.create_task(
+    platform="windows",
     entry_script="app.py",
-    workspace="./src",
+    workspace="./",
     config={
         "builder": "pyinstaller",
-        "pyinstaller": {
-            "name": "MyApp",
-            "onefile": True,
-            "console": False,
-            "icon": "icon.ico",
-            "hidden_imports": ["requests"],
-            "datas": [
-                ("assets", "assets"),
-                ("config.yaml", ".")
-            ]
-        }
+        "name": "MyApp",
+        "icon": "icon.ico"
     }
 )
 
-# 启动任务
-if build_manager.start_task(task_id):
-    print("打包成功!")
-    status = build_manager.get_task_status(task_id)
-    print(f"输出目录: {status['output_dir']}")
-else:
-    print("打包失败!")
-```
-
-### 高级功能
-
-1. 任务状态查询:
-
-```python
 # 获取任务状态
-status = build_manager.get_task_status(task_id)
+status = builder.get_task_status(task_id)
 print(f"任务状态: {status['status']}")
-print(f"错误信息: {status['error']}")
-print(f"输出目录: {status['output_dir']}")
+print(f"进度: {status['progress']}%")
 ```
 
-2. 取消任务:
+## 高级特性
 
+1. 自动重连
 ```python
-# 取消正在运行的任务
-if build_manager.cancel_task(task_id):
-    print("任务已取消")
+# 启用自动重连
+builder.enable_auto_reconnect(
+    max_attempts=3,
+    delay=5
+)
 ```
 
-3. 清理任务:
-
+2. 负载均衡
 ```python
-# 清理任务资源
-build_manager.cleanup_task(task_id)
+# 配置负载均衡策略
+builder.set_load_balancer(
+    cpu_weight=0.4,
+    memory_weight=0.3,
+    disk_weight=0.3
+)
 ```
 
-4. 服务器管理:
-
+3. 并发控制
 ```python
-# 获取活动服务器列表
-active_servers = server_manager.get_active_servers()
+# 设置最大并发任务数
+builder.set_max_concurrent_tasks(5)
+```
 
-# 检查服务器健康状态
-health_status = server_manager.check_servers_health()
-
-# 断开服务器连接
-server_manager.disconnect_server("win_builder")
-
-# 清理所有连接
-server_manager.cleanup()
+4. 监控回调
+```python
+# 添加状态变更回调
+def on_status_change(task_id, status):
+    print(f"任务 {task_id} 状态变更: {status}")
+    
+builder.add_status_callback(on_status_change)
 ```
 
 ## 项目结构
 
 ```
 remotebuilder/
-├── core/                # 核心代码
-│   ├── server/         # 服务器管理
-│   │   ├── base.py     # 服务器基类
-│   │   ├── windows.py  # Windows 服务器
-│   │   ├── macos.py    # macOS 服务器
-│   │   ├── unix.py     # Unix 服务器
-│   │   ├── pool.py     # 连接池
-│   │   ├── retry.py    # 重试机制
-│   │   ├── factory.py  # 服务器工厂
-│   │   └── manager.py  # 服务器管理器
-│   └── builder/        # 打包管理
-│       ├── base.py     # 打包器基类
-│       ├── pyinstaller.py  # PyInstaller 实现
-│       └── manager.py  # 打包管理器
-├── docs/              # 文档
-├── examples/          # 示例代码
-├── tests/            # 测试代码
-├── README.md         # 项目说明
-├── requirements.txt  # 依赖清单
-└── LICENSE          # 开源协议
+├── core/
+│   ├── server/
+│   │   ├── manager.py    # 服务器管理
+│   │   ├── pool.py       # 连接池
+│   │   └── base.py       # 基础接口
+│   └── builder/
+│       ├── manager.py    # 打包管理
+│       ├── base.py       # 构建接口
+│       └── pyinstaller.py # PyInstaller支持
+├── docs/
+│   └── project_plan.md   # 项目计划
+└── tests/                # 测试用例
 ```
 
 ## 开发计划
 
-- [ ] 添加更多打包工具支持
-  - [ ] cx_Freeze
-  - [ ] py2exe
-  - [ ] py2app
-  - [ ] auto-py-to-exe
-  
-- [ ] 实现 Web 管理界面
-  - [ ] 任务管理
-  - [ ] 服务器管理
-  - [ ] 实时日志
-  - [ ] 状态监控
-  
-- [ ] 添加打包任务队列
-  - [ ] 任务优先级
-  - [ ] 并发控制
-  - [ ] 队列管理
-  
-- [ ] 支持自定义打包脚本
-  - [ ] 脚本模板
-  - [ ] 变量替换
-  - [ ] 条件控制
-  
-- [ ] 添加监控和统计功能
-  - [ ] 资源使用统计
-  - [ ] 任务执行统计
-  - [ ] 性能分析
-  - [ ] 告警通知
+1. 第一阶段 (已完成)
+   - 核心功能实现
+   - 基础框架搭建
+   - 服务器管理
+   - 打包流程
+
+2. 第二阶段
+   - Web管理界面
+   - 更多打包工具
+   - 监控系统
+   - API完善
+
+3. 第三阶段
+   - 性能优化
+   - 扩展功能
+   - 文档完善
+   - 社区建设
 
 ## 贡献指南
 
-1. Fork 项目
-2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
-3. 提交改动 (`git commit -m 'Add some amazing feature'`)
-4. 推送分支 (`git push origin feature/amazing-feature`)
-5. 创建 Pull Request
+欢迎贡献代码，请参考 [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## 开源协议
 
-本项目采用 MIT 开源协议 - 查看 [LICENSE](LICENSE) 了解详情
+MIT License

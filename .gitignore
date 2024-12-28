@@ -21,11 +21,11 @@ wheels/
 *.egg
 
 # Virtual Environment
-.env
-.venv
-env/
 venv/
+env/
 ENV/
+.env/
+.venv/
 
 # IDE
 .idea/
@@ -36,27 +36,35 @@ ENV/
 .pydevproject
 .settings/
 
-# OS
-.DS_Store
-Thumbs.db
-
 # Logs
 *.log
 logs/
+log/
+
+# Build output
+output/
+temp/
+tmp/
 
 # Test
 .coverage
 .pytest_cache/
 htmlcov/
+.tox/
 
-# Build
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Package specific
 *.spec
 *.exe
 *.app
-*.dmg
-
-# Temp
-tmp/
-temp/
-.tmp/
-.temp/ 
+*.dmg 
