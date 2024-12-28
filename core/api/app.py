@@ -8,6 +8,7 @@ from datetime import datetime
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import uvicorn
 
 from .base import ServerConfig, BuildConfig, ServerInfo, TaskInfo, APIResponse
 from .server import ServerAPI
@@ -239,4 +240,22 @@ async def general_exception_handler(request, exc):
         success=False,
         message="Internal server error",
         error=str(exc)
-    ) 
+    )
+
+# API路由
+@app.get("/")
+async def root():
+    return {"message": "RemoteBuilder API"}
+
+@app.get("/api/servers")
+async def get_servers():
+    # TODO: 实现获取服务器列表
+    return []
+
+@app.get("/api/tasks")
+async def get_tasks():
+    # TODO: 实现获取任务列表
+    return []
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=5000) 

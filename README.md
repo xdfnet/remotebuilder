@@ -1,65 +1,86 @@
 # RemoteBuilder
 
-跨平台Python应用打包工具
+远程跨平台Python应用打包服务
 
 ## 为谁服务
 
-- Python应用开发团队
-- 独立开发者
-- CI/CD系统
-- 大规模应用分发
+- Python应用开发团队 - 需要跨平台打包能力的开发团队
+- 独立开发者 - 需要打包Python应用但缺乏完整环境的开发者
+- CI/CD系统 - 需要自动化打包流程的持续集成系统
+- 大规模应用分发 - 需要高效打包和分发Python应用的场景
 
 ## 解决什么问题
 
-- 跨平台构建环境管理
-- 自动化打包流程
-- 资源优化
-- 可靠性保证
-- 统一接口
+1. 环境管理
+- 自动管理不同平台的打包环境
+- 统一的环境配置和依赖管理
+- 避免本地环境污染
+
+2. 自动化流程
+- 自动选择最优打包服务器
+- 支持批量打包任务
+- 提供任务队列和调度
+
+3. 资源优化
+- 分布式负载均衡
+- 资源使用监控
+- 自动伸缩和故障转移
+
+4. 可靠性保证
+- 服务器健康检查
+- 自动重试和故障恢复
+- 完整的日志记录
+
+5. 统一接口
+- RESTful API接口
+- Web管理界面
+- 命令行工具
 
 ## 功能特性
 
 ### 核心功能
-- 跨平台打包支持(Windows/Linux/macOS)
-- 多种打包工具支持(PyInstaller/cx_Freeze/py2exe/py2app)
-- 远程构建服务器管理
-- 分布式任务调度
-- 构建产物管理
+- [x] 跨平台打包支持(Windows/macOS/Linux)
+- [x] 分布式任务调度
+- [x] 服务器管理和监控
+- [x] 负载均衡
+- [x] 故障转移
+- [x] 资源监控
+- [x] 告警系统
 
-### 管理功能
-- Web管理界面
-- 服务器管理
-  - 服务器添加/移除
-  - 状态监控
-  - 健康检查
-  - 自动重连
-- 任务管理
-  - 任务创建/取消
-  - 进度跟踪
-  - 日志查看
-  - 产物下载
-- 监控告警
-  - 性能监控
-  - 资源监控
-  - 告警通知
-  - 问题诊断
+### Web界面
+- [x] 服务器管理
+- [x] 任务管理 
+- [x] 监控面板
+- [x] 告警中心
 
-### 高级特性
-- 分布式任务调度
-  - 优先级队列
-  - 智能任务分配
-  - 自动故障转移
-  - 任务状态追踪
-- 智能负载均衡
-  - 多维度评分
-  - 动态权重调整
-  - 趋势预测
-  - 阈值控制
-- 性能优化
-  - 资源使用监控
-  - 性能瓶颈分析
-  - 自动预警
-  - 历史数据分析
+### API接口
+- [x] RESTful API
+- [x] WebSocket实时通知
+- [x] 完整的API文档
+
+## 快速开始
+
+1. 安装依赖
+```bash
+# 安装后端依赖
+pip install -r requirements.txt
+
+# 安装前端依赖
+cd web && npm install
+```
+
+2. 启动服务
+```bash
+# 启动后端服务
+python main.py
+
+# 启动前端开发服务器
+cd web && npm run dev
+```
+
+3. 访问服务
+- Web界面: http://localhost:3000
+- API文档: http://localhost:5000/docs
 
 ## 项目结构
 
@@ -67,80 +88,30 @@
 .
 ├── core/               # 核心功能模块
 │   ├── api/           # API接口
-│   ├── builder/       # 构建实现
-│   ├── config/        # 配置管理
-│   ├── monitor/       # 监控系统
-│   ├── scheduler/     # 任务调度
+│   ├── builder/       # 打包功能
+│   ├── monitor/       # 监控功能
+│   ├── scheduler/     # 调度系统
 │   └── server/        # 服务器管理
-├── web/               # Web管理界面
-│   ├── src/
-│   │   ├── assets/    # 静态资源
-│   │   ├── components/# 组件
-│   │   ├── layouts/   # 布局
-│   │   ├── router/    # 路由配置
-│   │   ├── styles/    # 样式文件
-│   │   └── views/     # 页面
-│   └── vite.config.js # 构建配置
-├── docs/              # 文档
-└── tests/             # 测试
+├── web/               # Web前端
+│   ├── src/          # 源代码
+│   └── public/       # 静态资源
+├── docs/             # 文档
+├── tests/            # 测试用例
+└── example/          # 示例代码
 ```
 
-## 安装使用
+## 配置说明
 
-1. 克隆项目
-```bash
-git clone https://github.com/xdfnet/remotebuilder.git
-cd remotebuilder
-```
+详细配置说明请参考 [配置文档](docs/configuration.md)
 
-2. 安装依赖
-```bash
-# 后端依赖
-pip install -r requirements.txt
+## 开发说明
 
-# 前端依赖
-cd web
-npm install
-```
-
-3. 启动服务
-```bash
-# 启动后端服务
-python main.py
-
-# 启动前端开发服务器
-cd web
-npm run dev
-```
-
-4. 访问管理界面
-```
-http://localhost:3000
-```
-
-## 开发计划
-
-- [x] 第一阶段: 核心功能实现
-  - [x] 远程服务器管理
-  - [x] 构建系统
-  - [x] 基础API
-
-- [x] 第二阶段: Web管理系统
-  - [x] 服务器管理界面
-  - [x] 任务管理界面
-  - [x] 监控告警系统
-  - [x] 界面交互优化
-
-- [x] 第三阶段: 高级特性
-  - [x] 分布式任务调度
-  - [x] 智能负载均衡
-  - [x] 自动化测试
-  - [x] 性能优化
+请参考 [开发文档](docs/development.md)
 
 ## 贡献指南
 
-详见 [CONTRIBUTING.md](./CONTRIBUTING.md)
+请参考 [贡献指南](CONTRIBUTING.md)
 
 ## 开源协议
 
-[MIT License](./LICENSE)
+[MIT License](LICENSE)
