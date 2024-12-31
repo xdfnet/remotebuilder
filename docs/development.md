@@ -3,12 +3,14 @@
 ## 开发环境搭建
 
 ### 1. 克隆项目
+
 ```bash
 git clone https://github.com/yourusername/remotebuilder.git
 cd remotebuilder
 ```
 
 ### 2. 创建虚拟环境
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Linux/macOS
@@ -17,6 +19,7 @@ source .venv/bin/activate  # Linux/macOS
 ```
 
 ### 3. 安装依赖
+
 ```bash
 # 后端依赖
 pip install -r requirements.txt
@@ -28,7 +31,7 @@ npm install
 
 ## 项目结构说明
 
-```
+```text
 .
 ├── core/                # 核心功能模块
 │   ├── api/            # API接口定义
@@ -54,12 +57,14 @@ npm install
 ## 开发规范
 
 ### Python代码规范
+
 - 遵循PEP 8规范
 - 使用类型注解
 - 编写文档字符串
 - 单元测试覆盖率要求 > 80%
 
 ### JavaScript代码规范
+
 - 使用ESLint
 - 遵循Airbnb JavaScript规范
 - 使用TypeScript
@@ -68,12 +73,14 @@ npm install
 ## API开发
 
 ### 添加新API
+
 1. 在 `core/api/routes` 下创建路由文件
 2. 在 `core/api/models` 下定义数据模型
 3. 编写API文档
 4. 添加单元测试
 
 示例：
+
 ```python
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -97,11 +104,13 @@ async def create_task(task: TaskCreate):
 ## 前端开发
 
 ### 添加新页面
+
 1. 在 `web/src/pages` 下创建页面组件
 2. 在路由配置中添加新页面
 3. 添加必要的组件测试
 
 示例：
+
 ```typescript
 // TaskList.tsx
 import React from 'react';
@@ -139,6 +148,7 @@ export default TaskList;
 ## 测试指南
 
 ### 运行测试
+
 ```bash
 # 后端测试
 pytest tests/
@@ -149,12 +159,14 @@ npm test
 ```
 
 ### 编写测试
+
 - 使用pytest进行后端测试
 - 使用Jest和React Testing Library进行前端测试
 - 遵循AAA模式（Arrange-Act-Assert）
 - 使用mock处理外部依赖
 
 示例：
+
 ```python
 # test_tasks.py
 import pytest
@@ -179,12 +191,15 @@ def test_create_task():
 ## 调试技巧
 
 ### 后端调试
+
 1. 使用Python调试器
+
 ```python
 import pdb; pdb.set_trace()
 ```
 
 2. 使用日志
+
 ```python
 import logging
 logger = logging.getLogger(__name__)
@@ -192,6 +207,7 @@ logger.debug("Debug message")
 ```
 
 ### 前端调试
+
 1. 使用React Developer Tools
 2. 使用Chrome DevTools
 3. 使用console.log()进行调试输出
@@ -199,6 +215,7 @@ logger.debug("Debug message")
 ## 部署指南
 
 ### 开发环境
+
 ```bash
 # 启动后端服务
 python main.py
@@ -209,6 +226,7 @@ npm run dev
 ```
 
 ### 生产环境
+
 ```bash
 # 构建前端
 cd web
