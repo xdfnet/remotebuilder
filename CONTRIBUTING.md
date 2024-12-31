@@ -10,19 +10,22 @@
 ## 开发环境设置
 
 1. Fork 项目并克隆到本地：
+
 ```bash
 git clone https://github.com/xdfnet/remotebuilder.git
 cd remotebuilder
 ```
 
-2. 创建虚拟环境：
+1. 创建虚拟环境：
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Linux/macOS
 .venv\Scripts\activate     # Windows
 ```
 
-3. 安装依赖：
+1. 安装依赖：
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -38,12 +41,14 @@ pip install -r requirements.txt
 ## 提交规范
 
 1. 创建功能分支：
+
 ```bash
 git checkout -b feature/your-feature
 ```
 
-2. 提交信息格式：
-```
+1. 提交信息格式：
+
+```text
 <type>(<scope>): <subject>
 
 <body>
@@ -52,6 +57,7 @@ git checkout -b feature/your-feature
 ```
 
 类型（type）：
+
 - feat: 新功能
 - fix: 修复
 - docs: 文档
@@ -60,8 +66,9 @@ git checkout -b feature/your-feature
 - test: 测试
 - chore: 构建过程或辅助工具的变动
 
-3. 示例：
-```
+1. 示例：
+
+```text
 feat(server): 添加服务器自动重连功能
 
 - 实现断线重连机制
@@ -80,17 +87,20 @@ Closes #123
 ## Pull Request
 
 1. 更新您的分支：
+
 ```bash
 git fetch upstream
 git rebase upstream/main
 ```
 
-2. 推送到您的仓库：
+1. 推送到您的仓库：
+
 ```bash
 git push origin feature/your-feature
 ```
 
-3. 创建 Pull Request，包括：
+1. 创建 Pull Request，包括：
+
 - 清晰的标题和描述
 - 相关的 issue 链接
 - 破坏性改动说明
