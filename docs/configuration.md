@@ -3,11 +3,13 @@
 ## 环境配置
 
 ### 系统要求
+
 - Python 3.8+
 - Node.js 14+
 - npm 6+
 
 ### 环境变量
+
 ```bash
 # 服务器配置
 PORT=5000                 # API服务器端口
@@ -35,6 +37,7 @@ TASK_TIMEOUT=3600    # 任务超时时间(秒)
 ## 服务器配置
 
 ### 基础配置
+
 ```yaml
 server:
   name: "builder-1"           # 服务器名称
@@ -45,6 +48,7 @@ server:
 ```
 
 ### 安全配置
+
 ```yaml
 security:
   secret_key: "your-secret-key"    # 密钥
@@ -55,6 +59,7 @@ security:
 ```
 
 ### 存储配置
+
 ```yaml
 storage:
   type: "local"                    # 存储类型(local/s3)
@@ -70,6 +75,7 @@ storage:
 ## 监控配置
 
 ### 资源监控
+
 ```yaml
 monitor:
   interval: 60                    # 监控间隔(秒)
@@ -81,6 +87,7 @@ monitor:
 ```
 
 ### 告警配置
+
 ```yaml
 alert:
   enabled: true                   # 是否启用告警
@@ -97,6 +104,7 @@ alert:
 ```
 
 ## 日志配置
+
 ```yaml
 logging:
   level: "INFO"                  # 日志级别
@@ -109,6 +117,7 @@ logging:
 ## 高级配置
 
 ### 性能调优
+
 ```yaml
 performance:
   max_concurrent_tasks: 10       # 最大并发任务数
@@ -117,6 +126,7 @@ performance:
 ```
 
 ### 缓存配置
+
 ```yaml
 cache:
   enabled: true                 # 是否启用缓存
