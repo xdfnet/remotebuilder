@@ -75,9 +75,9 @@ npm install
 ### 添加新API
 
 1. 在 `core/api/routes` 下创建路由文件
-2. 在 `core/api/models` 下定义数据模型
-3. 编写API文档
-4. 添加单元测试
+1. 在 `core/api/models` 下定义数据模型
+1. 编写API文档
+1. 添加单元测试
 
 示例：
 
@@ -106,8 +106,8 @@ async def create_task(task: TaskCreate):
 ### 添加新页面
 
 1. 在 `web/src/pages` 下创建页面组件
-2. 在路由配置中添加新页面
-3. 添加必要的组件测试
+1. 在路由配置中添加新页面
+1. 添加必要的组件测试
 
 示例：
 
@@ -209,8 +209,8 @@ logger.debug("Debug message")
 ### 前端调试
 
 1. 使用React Developer Tools
-2. 使用Chrome DevTools
-3. 使用console.log()进行调试输出
+1. 使用Chrome DevTools
+1. 使用console.log()进行调试输出
 
 ## 部署指南
 
